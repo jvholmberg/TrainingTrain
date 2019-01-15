@@ -1,0 +1,14 @@
+M:\Projects\App\TrainingTrain\UserCatalog\bin\Debug\netcoreapp2.1\UserCatalog.deps.json
+M:\Projects\App\TrainingTrain\UserCatalog\bin\Debug\netcoreapp2.1\UserCatalog.runtimeconfig.json
+M:\Projects\App\TrainingTrain\UserCatalog\bin\Debug\netcoreapp2.1\UserCatalog.runtimeconfig.dev.json
+M:\Projects\App\TrainingTrain\UserCatalog\bin\Debug\netcoreapp2.1\UserCatalog.dll
+M:\Projects\App\TrainingTrain\UserCatalog\bin\Debug\netcoreapp2.1\UserCatalog.pdb
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.csproj.CoreCompileInputs.cache
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.RazorAssemblyInfo.cache
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.RazorAssemblyInfo.cs
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.AssemblyInfoInputs.cache
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.AssemblyInfo.cs
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.RazorTargetAssemblyInfo.cache
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.dll
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.pdb
+M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\UserCatalog.csprojAssemblyReference.cache
