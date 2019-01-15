@@ -1,13 +1,6 @@
-﻿using Application.Data;
-using Application.Helpers;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -23,12 +16,14 @@ namespace Application.Services
 
 	public class AuthService : IAuthService
 	{
-		private readonly AppSettings _appSettings;
-		private readonly ApplicationContext _context;
+		private readonly Helpers.AppSettings _appSettings;
+		private readonly Helpers.IAuth _authHelper;
+		private readonly Data.ApplicationContext _context;
 
-		public AuthService(IOptions<AppSettings> appSettings, ApplicationContext context)
+		public AuthService(IOptions<Helpers.AppSettings> appSettings, Data.ApplicationContext context)
 		{
 			_appSettings = appSettings.Value;
+			_authHelper = new Helpers.Auth();
 			_context = context;
 		}
 
@@ -39,69 +34,48 @@ namespace Application.Services
 
 		public async Task<Views.AuthenticateResponse> Authenticate(string authorization)
 		{
-			var tokenHandler = new JwtSecurityTokenHandler();
+			var tokenId = _authHelper.GetUserIdFromAuthorizationHeader(authorization);
+			var token = _authHelper.GetTokenFromAuthorizationHeader(authorization);
 
-			var encoded = authorization.Replace("Bearer ", "");
-			var decoded = tokenHandler.ReadJwtToken(encoded);
-			var payload = decoded.Payload;
-			var uniqueName = payload.GetValueOrDefault("unique_name") as string;
-			
-			if (int.TryParse(uniqueName, out int id)) 
+			var user = await _context.Users.FindAsync(tokenId);
+			if (user.Token != token)
 			{
-				var user = await _context.Users.FindAsync(id);
-				if (user.Token == encoded)
-				{
-					return new Views.AuthenticateResponse
-					{
-						Email = user.Email,
-						Token = user.Token,
-						ValidUntil = user.TokenValid
-					};
-				}
+				throw new Exception();
 			}
-			throw new Exception();
+
+			return new Views.AuthenticateResponse
+			{
+				Email = user.Email,
+				Token = user.Token,
+				TokenExpires = user.TokenExpires
+			};
 		}
 
 		public async Task<Views.RenewResponse> Renew(string authorization)
 		{
-			var tokenHandler = new JwtSecurityTokenHandler();
-
-			var encoded = authorization.Replace("Bearer ", "");
-			var decoded = tokenHandler.ReadJwtToken(encoded);
-			var payload = decoded.Payload;
-			var uniqueName = payload.GetValueOrDefault("unique_name") as string;
-
-			if (int.TryParse(uniqueName, out int id))
+			var currentTokenId = _authHelper.GetUserIdFromAuthorizationHeader(authorization);
+			var currentToken = _authHelper.GetTokenFromAuthorizationHeader(authorization);
+			
+			var user = await _context.Users.FindAsync(currentTokenId);
+			if (user.Token != currentToken)
 			{
-				var user = await _context.Users.FindAsync(id);
-				if (user.Token == encoded)
-				{
-					var validUntil = DateTime.UtcNow.AddDays(3);
-					var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-					var tokenDescriptor = new SecurityTokenDescriptor
-					{
-						Subject = new ClaimsIdentity(new Claim[]
-						{
-							new Claim(ClaimTypes.Name, user.Id.ToString())
-						}),
-						Expires = validUntil,
-						SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-					};
-					var token = tokenHandler.CreateToken(tokenDescriptor);
-					user.Token = tokenHandler.WriteToken(token);
-					user.TokenValid = validUntil;
-
-					await _context.SaveChangesAsync();
-
-					return new Views.RenewResponse
-					{
-						Email = user.Email,
-						Token = user.Token,
-						ValidUntil = validUntil
-					};
-				}
+				throw new Exception();
 			}
-			throw new Exception();
+			// Create new token
+			DateTime validUntil;
+			var token = _authHelper.CreateToken(user.Id, _appSettings.Secret, out validUntil);
+
+			// Save token on user entity
+			user.Token = token;
+			user.TokenExpires = validUntil;
+			await _context.SaveChangesAsync();
+
+			return new Views.RenewResponse
+			{
+				Email = user.Email,
+				Token = user.Token,
+				TokenExpires = validUntil
+			};
 		}
 
 		public async Task<Views.LoginResponse> Login(Views.LoginRequest input)
@@ -127,29 +101,20 @@ namespace Application.Services
 				throw new Exception();
 			}
 
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var validUntil = DateTime.UtcNow.AddDays(3);
-			var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-			var tokenDescriptor = new SecurityTokenDescriptor
-			{
-				Subject = new ClaimsIdentity(new Claim[]
-				{
-					new Claim(ClaimTypes.Name, user.Id.ToString())
-				}),
-				Expires = validUntil,
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-			};
-			var token = tokenHandler.CreateToken(tokenDescriptor);
-			user.Token = tokenHandler.WriteToken(token);
-			user.TokenValid = validUntil;
+			// Create new token
+			DateTime validUntil;
+			var token = _authHelper.CreateToken(user.Id, _appSettings.Secret, out validUntil);
 
+			// Save token on user entity
+			user.Token = token;
+			user.TokenExpires = validUntil;
 			await _context.SaveChangesAsync();
 
 			return new Views.LoginResponse
 			{
 				Email = user.Email,
 				Token = user.Token,
-				ValidUntil = validUntil
+				TokenExpires = validUntil
 			};
 		}
 

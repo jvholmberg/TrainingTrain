@@ -1,13 +1,7 @@
-﻿using Application.Entities;
-using Application.Services;
+﻿using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using System.IO;
 
 namespace Application.Controllers
 {

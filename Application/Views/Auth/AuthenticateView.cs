@@ -7,7 +7,7 @@ namespace Application.Views
 	{
 		public string Email { get; set; }
 		public string Token { get; set; }
-		public DateTime ValidUntil { get; set; }
+		public DateTime TokenExpires { get; set; }
 	}
 }
 

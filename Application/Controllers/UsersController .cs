@@ -1,13 +1,7 @@
-﻿using Application.Entities;
-using Application.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using System.IO;
 
 namespace Application.Controllers
 {
@@ -18,22 +12,37 @@ namespace Application.Controllers
     public class UsersController : ControllerBase
     {
 
-		private readonly IAuthService _authService;
-        private readonly IUsersService _userService;
+		private readonly Services.IAuthService _authService;
+		private readonly Services.IUsersService _userService;
+		private readonly Helpers.IAuth _authHelper;
 
-        public UsersController(IAuthService authService, IUsersService userService)
+		public UsersController(Services.IAuthService authService, Services.IUsersService userService)
         {
 			_authService = authService;
 			_userService = userService;
+			_authHelper = new Helpers.Auth();
         }
 
 		// GET: /users/{id}
-		[AllowAnonymous]
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetById([FromRoute]int id)
+		public async Task<IActionResult> GetById([FromHeader]string authorization, [FromRoute]int id)
 		{
 			try
 			{
+				// Get id from token
+				var tokenId = _authHelper.GetUserIdFromAuthorizationHeader(authorization);
+
+				// If requesting different user, check if allowed
+				if (tokenId != id)
+				{
+					var user = await _userService.GetById(tokenId);
+					if (!user.Role.Special)
+					{
+						return Unauthorized();
+					}
+				}
+
+				// Return requested user
 				var res = await _userService.GetById(id);
 				return Ok(res);
 			}
@@ -43,5 +52,32 @@ namespace Application.Controllers
 			}
 		}
 
+		// GET: /users
+		[HttpGet]
+		public async Task<IActionResult> GetAll([FromHeader]string authorization)
+		{
+			try
+			{
+				// Get id from token
+				var tokenId = _authHelper.GetUserIdFromAuthorizationHeader(authorization);
+
+				// Get requesting user
+				var user = await _userService.GetById(tokenId);
+				
+				if (!user.Role.Special)
+				{
+					return Unauthorized();
+				}
+
+				// Return requested users
+				var users = await _userService.GetAll();
+				var res = users.Select(x => new Views.User(x));
+				return Ok(res);
+			}
+			catch
+			{
+				return BadRequest();
+			}
+		}
 	}
 }

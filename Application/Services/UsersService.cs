@@ -2,22 +2,16 @@
 using Application.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
 	public interface IUsersService
 	{
-		Task<Views.User> GetByToken(string token);
-		Task<Views.User> GetById(int id);
-		Task<Views.User> GetByEmail(string email);
+		Task<Entities.User> GetById(int id);
+		Task<IEnumerable<Entities.User>> GetAll();
 	}
 
 	public class UsersService : IUsersService
@@ -30,13 +24,8 @@ namespace Application.Services
 			_appSettings = appSettings.Value;
 			_context = context;
 		}
-
-		public async Task<Views.User> GetByToken(string token)
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task<Views.User> GetById(int id)
+		
+		public async Task<Entities.User> GetById(int id)
 		{
 			var user = await _context.Users
 				.Include(usr => usr.Role)
@@ -48,12 +37,16 @@ namespace Application.Services
 				throw new Exception();
 			}
 
-			return new Views.User(user);
+			return user;
 		}
 
-		public async Task<Views.User> GetByEmail(string email)
+		public async Task<IEnumerable<Entities.User>> GetAll()
 		{
-			throw new NotImplementedException();
+			var users = await _context.Users
+				.Include(usr => usr.Role)
+				.Include(usr => usr.Language)
+				.ToListAsync();
+			return users;
 		}
 	}
 }
