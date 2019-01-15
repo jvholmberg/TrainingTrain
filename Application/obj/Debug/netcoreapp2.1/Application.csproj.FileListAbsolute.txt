@@ -12,17 +12,3 @@ M:\Projects\App\TrainingTrain\UserCatalog\bin\Debug\netcoreapp2.1\Application.pd
 M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\Application.RazorTargetAssemblyInfo.cache
 M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\Application.dll
 M:\Projects\App\TrainingTrain\UserCatalog\obj\Debug\netcoreapp2.1\Application.pdb
-M:\Projects\App\TrainingTrain\Application\bin\Debug\netcoreapp2.1\Application.deps.json
-M:\Projects\App\TrainingTrain\Application\bin\Debug\netcoreapp2.1\Application.runtimeconfig.json
-M:\Projects\App\TrainingTrain\Application\bin\Debug\netcoreapp2.1\Application.runtimeconfig.dev.json
-M:\Projects\App\TrainingTrain\Application\bin\Debug\netcoreapp2.1\Application.dll
-M:\Projects\App\TrainingTrain\Application\bin\Debug\netcoreapp2.1\Application.pdb
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.csproj.CoreCompileInputs.cache
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.RazorAssemblyInfo.cache
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.RazorAssemblyInfo.cs
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.AssemblyInfoInputs.cache
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.AssemblyInfo.cs
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.RazorTargetAssemblyInfo.cache
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.dll
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.pdb
-M:\Projects\App\TrainingTrain\Application\obj\Debug\netcoreapp2.1\Application.csprojAssemblyReference.cache
