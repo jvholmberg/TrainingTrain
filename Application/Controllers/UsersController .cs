@@ -12,15 +12,13 @@ namespace Application.Controllers
     public class UsersController : ControllerBase
     {
 
-		private readonly Services.IAuthService _authService;
-		private readonly Services.IUsersService _userService;
-		private readonly Helpers.IAuth _authHelper;
+		private readonly Services.IAuthorizationService _AuthorizationService;
+		private readonly Services.IUsersService _UserService;
 
-		public UsersController(Services.IAuthService authService, Services.IUsersService userService)
+		public UsersController(Services.IAuthorizationService authService, Services.IUsersService userService)
         {
-			_authService = authService;
-			_userService = userService;
-			_authHelper = new Helpers.Auth();
+			_AuthorizationService = authService;
+			_UserService = userService;
         }
 
 		// GET: /users/{id}
@@ -29,18 +27,6 @@ namespace Application.Controllers
 		{
 			try
 			{
-				// Get id from token
-				var tokenId = _authHelper.GetUserIdFromAuthorizationHeader(authorization);
-
-				// If requesting different user, check if allowed
-				if (tokenId != id)
-				{
-					var user = await _userService.GetById(tokenId);
-					if (!user.Role.Special)
-					{
-						return Unauthorized();
-					}
-				}
 
 				// Return requested user
 				var res = await _userService.GetById(id);
@@ -79,5 +65,6 @@ namespace Application.Controllers
 				return BadRequest();
 			}
 		}
+
 	}
 }

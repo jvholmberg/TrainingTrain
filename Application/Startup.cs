@@ -61,7 +61,7 @@ namespace Application
 					ValidAudience = appSettings.Issuer,
 				};
 			});
-			services.AddScoped<IAuthService, AuthService>();
+			services.AddScoped<IAuthorizationService, AuthorizationService>();
 			services.AddScoped<IUsersService, UsersService>();
 
 		}

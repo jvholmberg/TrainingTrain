@@ -1,52 +1,111 @@
-﻿using Application.Data;
-using Application.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
 	public interface IUsersService
 	{
-		Task<Entities.User> GetById(int id);
-		Task<IEnumerable<Entities.User>> GetAll();
+		Task<Views.Users.User> GetById(string authorization, int id);
+		Task<IEnumerable<Views.Users.User>> GetAll(string authorization);
 	}
 
 	public class UsersService : IUsersService
 	{
-		private readonly AppSettings _appSettings;
-		private readonly ApplicationContext _context;
+		private readonly Helpers.AppSettings _AppSettings;
+		private readonly Data.ApplicationContext _Context;
+		private readonly Helpers.AuthorizationHelper _AuthorizationHelper;
 
-		public UsersService(IOptions<AppSettings> appSettings, ApplicationContext context)
+		public UsersService(IOptions<Helpers.AppSettings> appSettings, Data.ApplicationContext context)
 		{
-			_appSettings = appSettings.Value;
-			_context = context;
+			_AppSettings = appSettings.Value;
+			_Context = context;
+			_AuthorizationHelper = new Helpers.AuthorizationHelper();
 		}
 		
-		public async Task<Entities.User> GetById(int id)
+		public async Task<Views.Users.User> GetById(string authorization, int id)
 		{
-			var user = await _context.Users
-				.Include(usr => usr.Role)
-				.Include(usr => usr.Language)
-				.SingleOrDefaultAsync(x => x.Id == id);
-
-			if (user == null)
+			try
 			{
-				throw new Exception();
-			}
+				if (_AuthorizationHelper.TryParse(authorization, out IDictionary<string, string> dict))
+				{
+					string userId;
+					string userRole;
 
-			return user;
+					if (dict.TryGetValue(Helpers.AuthorizationClaim.UserId, out userId)
+					&& dict.TryGetValue(Helpers.AuthorizationClaim.UserRole, out userRole))
+					{
+						if (!userRole.Equals("admin") && !userId.Equals(id))
+						{
+							throw new Exception();
+						}
+
+						var requestedUser = await _Context.Users
+							.Include(usr => usr.Role)
+							.Include(usr => usr.Language)
+							.SingleOrDefaultAsync(x => x.Id.Equals(id));
+
+						return new Views.Users.User(requestedUser);
+					}
+					else
+					{
+						throw new Exception();
+					}
+				}
+				else
+				{
+					throw new Exception();
+				}
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
 		}
 
-		public async Task<IEnumerable<Entities.User>> GetAll()
+		public async Task<IEnumerable<Views.Users.User>> GetAll(string authorization)
 		{
-			var users = await _context.Users
-				.Include(usr => usr.Role)
-				.Include(usr => usr.Language)
-				.ToListAsync();
-			return users;
+			try
+			{
+				if (_AuthorizationHelper.TryParse(authorization, out IDictionary<string, string> dict))
+				{
+					string userId;
+					string userRole;
+
+					if (dict.TryGetValue(Helpers.AuthorizationClaim.UserId, out userId)
+					&& dict.TryGetValue(Helpers.AuthorizationClaim.UserRole, out userRole))
+					{
+						var user = await _Context.Users.FindAsync(userId);
+
+						if (!user.Role.Name.Equals("admin"))
+						{
+							throw new Exception();
+						}
+
+						var requestedUsers = await _Context.Users
+							.Include(usr => usr.Role)
+							.Include(usr => usr.Language)
+							.ToListAsync();
+
+						return requestedUsers.Select(usr => new Views.Users.User(usr));
+					}
+					else
+					{
+						throw new Exception();
+					}
+				}
+				else
+				{
+					throw new Exception();
+				}
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
 		}
 	}
 }
