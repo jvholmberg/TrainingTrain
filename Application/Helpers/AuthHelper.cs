@@ -1,35 +1,31 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
 namespace Application.Helpers
 {
-	public class AuthorizationClaim
-	{
-		public static string TokenType = "token_type";
-		public static string UserId = "user_id";
-		public static string UserRole = "user_role";
-	}
 
-	public interface IAuthorizationHelper
+	public interface IAuthHelper
 	{
 		JwtSecurityToken Deserialize(string authorization);
 		bool TryParse(string authorization, out IDictionary<string, string> dict);
 		bool TryParse(JwtSecurityToken token, out IDictionary<string, string> dict);
-		string CreateToken(string type, int id, string role, string secret, DateTime expiry);
+		string CreateToken(int id, string role, DateTime expiry);
+		string CreateRefreshToken();
 	}
 
-	public class AuthorizationHelper : IAuthorizationHelper
+	public class AuthHelper : IAuthHelper
 	{
+		private readonly AppSettings _AppSettings;
 		private readonly JwtSecurityTokenHandler _TokenHandler;
 
-		public AuthorizationHelper()
+		public AuthHelper(AppSettings appSettings)
 		{
+
+			_AppSettings = appSettings;
 			_TokenHandler = new JwtSecurityTokenHandler();
 		}
 
@@ -74,14 +70,12 @@ namespace Application.Helpers
 			try
 			{
 				var payload = token.Payload;
-				var tokenType = payload.GetValueOrDefault(AuthorizationClaim.TokenType) as string;
-				var userId = payload.GetValueOrDefault(AuthorizationClaim.UserId) as string;
-				var userRole = payload.GetValueOrDefault(AuthorizationClaim.UserRole) as string;
+				var userId = payload.GetValueOrDefault("unique_name") as string;
+				var userRole = payload.GetValueOrDefault("role") as string;
 
 				dict = new Dictionary<string, string>();
-				dict.Add(AuthorizationClaim.TokenType, tokenType);
-				dict.Add(AuthorizationClaim.UserId, userId);
-				dict.Add(AuthorizationClaim.UserRole, userRole);
+				dict.Add(ClaimTypes.Name, userId);
+				dict.Add(ClaimTypes.Role, userRole);
 				return true;
 			}
 			catch
@@ -91,19 +85,21 @@ namespace Application.Helpers
 			}
 		}
 			
-		public string CreateToken(string type, int id, string role, string secret, DateTime expiry)
+		public string CreateToken(int id, string role, DateTime expiry)
 		{
 			try
 			{
+				// Get secret from config
+				var secret = _AppSettings.Secret;
+
 				var securityKey = Encoding.ASCII.GetBytes(secret);
 				var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256Signature);
 				var tokenDescriptor = new SecurityTokenDescriptor
 				{
 					Subject = new ClaimsIdentity(new Claim[]
 					{
-						new Claim(AuthorizationClaim.TokenType, type),
-						new Claim(AuthorizationClaim.UserId, id.ToString()),
-						new Claim(AuthorizationClaim.UserRole, role),
+						new Claim(ClaimTypes.Name, id.ToString()),
+						new Claim(ClaimTypes.Role, role),
 					}),
 					Expires = expiry,
 					SigningCredentials = signingCredentials
@@ -111,6 +107,18 @@ namespace Application.Helpers
 				var securitytoken = _TokenHandler.CreateToken(tokenDescriptor);
 				var token = _TokenHandler.WriteToken(securitytoken);
 				return token;
+			}
+			catch
+			{
+				throw new Exception();
+			}
+		}
+		public string CreateRefreshToken()
+		{
+			try
+			{
+				var guid = Guid.NewGuid().ToString();
+				return guid;
 			}
 			catch
 			{

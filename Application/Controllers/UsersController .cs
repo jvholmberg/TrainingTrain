@@ -12,24 +12,22 @@ namespace Application.Controllers
     public class UsersController : ControllerBase
     {
 
-		private readonly Services.IAuthorizationService _AuthorizationService;
-		private readonly Services.IUsersService _UserService;
+		private readonly Services.IAuthService _AuthService;
+		private readonly Services.IUserService _UserService;
 
-		public UsersController(Services.IAuthorizationService authService, Services.IUsersService userService)
+		public UsersController(Services.IAuthService authService, Services.IUserService userService)
         {
-			_AuthorizationService = authService;
+			_AuthService = authService;
 			_UserService = userService;
         }
-
-		// GET: /users/{id}
+		
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById([FromHeader]string authorization, [FromRoute]int id)
 		{
 			try
 			{
-
 				// Return requested user
-				var res = await _userService.GetById(id);
+				var res = await _UserService.GetById(authorization, id);
 				return Ok(res);
 			}
 			catch
@@ -37,27 +35,14 @@ namespace Application.Controllers
 				return BadRequest();
 			}
 		}
-
-		// GET: /users
+		
 		[HttpGet]
 		public async Task<IActionResult> GetAll([FromHeader]string authorization)
 		{
 			try
 			{
-				// Get id from token
-				var tokenId = _authHelper.GetUserIdFromAuthorizationHeader(authorization);
-
-				// Get requesting user
-				var user = await _userService.GetById(tokenId);
-				
-				if (!user.Role.Special)
-				{
-					return Unauthorized();
-				}
-
-				// Return requested users
-				var users = await _userService.GetAll();
-				var res = users.Select(x => new Views.User(x));
+				// Return all users
+				var res = await _UserService.GetAll(authorization);
 				return Ok(res);
 			}
 			catch

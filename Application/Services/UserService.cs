@@ -3,40 +3,39 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-	public interface IUsersService
+	public interface IUserService
 	{
 		Task<Views.Users.User> GetById(string authorization, int id);
 		Task<IEnumerable<Views.Users.User>> GetAll(string authorization);
 	}
 
-	public class UsersService : IUsersService
+	public class UserService : IUserService
 	{
 		private readonly Helpers.AppSettings _AppSettings;
 		private readonly Data.ApplicationContext _Context;
-		private readonly Helpers.AuthorizationHelper _AuthorizationHelper;
+		private readonly Helpers.AuthHelper _AuthHelper;
 
-		public UsersService(IOptions<Helpers.AppSettings> appSettings, Data.ApplicationContext context)
+		public UserService(IOptions<Helpers.AppSettings> appSettings, Data.ApplicationContext context)
 		{
 			_AppSettings = appSettings.Value;
 			_Context = context;
-			_AuthorizationHelper = new Helpers.AuthorizationHelper();
+			_AuthHelper = new Helpers.AuthHelper(appSettings.Value);
 		}
 		
 		public async Task<Views.Users.User> GetById(string authorization, int id)
 		{
 			try
 			{
-				if (_AuthorizationHelper.TryParse(authorization, out IDictionary<string, string> dict))
+				if (_AuthHelper.TryParse(authorization, out IDictionary<string, string> dict))
 				{
-					string userId;
-					string userRole;
 
-					if (dict.TryGetValue(Helpers.AuthorizationClaim.UserId, out userId)
-					&& dict.TryGetValue(Helpers.AuthorizationClaim.UserRole, out userRole))
+					if (dict.TryGetValue(ClaimTypes.Name, out string userId)
+					&& dict.TryGetValue(ClaimTypes.Role, out string userRole))
 					{
 						if (!userRole.Equals("admin") && !userId.Equals(id))
 						{
@@ -70,13 +69,10 @@ namespace Application.Services
 		{
 			try
 			{
-				if (_AuthorizationHelper.TryParse(authorization, out IDictionary<string, string> dict))
+				if (_AuthHelper.TryParse(authorization, out IDictionary<string, string> dict))
 				{
-					string userId;
-					string userRole;
-
-					if (dict.TryGetValue(Helpers.AuthorizationClaim.UserId, out userId)
-					&& dict.TryGetValue(Helpers.AuthorizationClaim.UserRole, out userRole))
+					if (dict.TryGetValue(ClaimTypes.Name, out string userId)
+					&& dict.TryGetValue(ClaimTypes.Role, out string userRole))
 					{
 						var user = await _Context.Users.FindAsync(userId);
 
