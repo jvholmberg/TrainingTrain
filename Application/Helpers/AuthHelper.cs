@@ -108,9 +108,9 @@ namespace Application.Helpers
 				var token = _TokenHandler.WriteToken(securitytoken);
 				return token;
 			}
-			catch
+			catch (Exception e)
 			{
-				throw new Exception();
+				throw e;
 			}
 		}
 		public string CreateRefreshToken()

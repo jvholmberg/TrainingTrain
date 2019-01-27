@@ -51,5 +51,20 @@ namespace Application.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpPost]
+		public async Task<IActionResult> Create([FromBody]Views.Users.CreateRequest req)
+		{
+			try
+			{
+				var res = await _UserService.Create(req);
+				return Ok(res);
+			}
+			catch
+			{
+				return BadRequest();
+			}
+		}
+
 	}
 }

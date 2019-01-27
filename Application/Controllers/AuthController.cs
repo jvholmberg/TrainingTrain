@@ -20,11 +20,11 @@ namespace Application.Controllers
 
 		[AllowAnonymous]
 		[HttpPost]
-		public async Task<IActionResult> Authenticate([FromBody]Views.Auth.AuthenticateRequest input)
+		public async Task<IActionResult> Authenticate([FromBody]Views.Auth.AuthenticateRequest req)
 		{
 			try
 			{
-				var res = await _AuthService.Authenticate(input.Username, input.Password);
+				var res = await _AuthService.Authenticate(req.Username, req.Password);
 				return Ok(res);
 			}
 			catch

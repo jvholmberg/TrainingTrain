@@ -121,7 +121,7 @@ namespace Application.Services
 			try
 			{
 				// Get expiry
-				var expiry = DateTime.UtcNow.AddHours(1);
+				var expiry = DateTime.UtcNow.AddHours(4);
 
 				// Create new access token
 				var accessToken = _AuthHelper.CreateToken(user.Id, user.Role.Name, expiry);

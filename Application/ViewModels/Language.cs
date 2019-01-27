@@ -1,4 +1,4 @@
-﻿namespace Application.Views
+﻿namespace Application.ViewModels
 {
 	public class Language
 	{

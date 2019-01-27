@@ -10,8 +10,9 @@ namespace Application.Services
 {
 	public interface IUserService
 	{
-		Task<Views.Users.User> GetById(string authorization, int id);
-		Task<IEnumerable<Views.Users.User>> GetAll(string authorization);
+		Task<ViewModels.User> GetById(string authorization, int id);
+		Task<IEnumerable<ViewModels.User>> GetAll(string authorization);
+		Task<Views.Users.CreateResponse> Create(Views.Users.CreateRequest req);
 	}
 
 	public class UserService : IUserService
@@ -27,7 +28,7 @@ namespace Application.Services
 			_AuthHelper = new Helpers.AuthHelper(appSettings.Value);
 		}
 		
-		public async Task<Views.Users.User> GetById(string authorization, int id)
+		public async Task<ViewModels.User> GetById(string authorization, int id)
 		{
 			try
 			{
@@ -47,7 +48,7 @@ namespace Application.Services
 							.Include(usr => usr.Language)
 							.SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-						return new Views.Users.User(requestedUser);
+						return new ViewModels.User(requestedUser);
 					}
 					else
 					{
@@ -65,7 +66,7 @@ namespace Application.Services
 			}
 		}
 
-		public async Task<IEnumerable<Views.Users.User>> GetAll(string authorization)
+		public async Task<IEnumerable<ViewModels.User>> GetAll(string authorization)
 		{
 			try
 			{
@@ -86,7 +87,7 @@ namespace Application.Services
 							.Include(usr => usr.Language)
 							.ToListAsync();
 
-						return requestedUsers.Select(usr => new Views.Users.User(usr));
+						return requestedUsers.Select(usr => new ViewModels.User(usr));
 					}
 					else
 					{
@@ -97,6 +98,72 @@ namespace Application.Services
 				{
 					throw new Exception();
 				}
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
+
+		public async Task<Views.Users.CreateResponse> Create(Views.Users.CreateRequest req)
+		{
+			try
+			{
+				// Check if username is already taken
+				var existingUser = await GetByUsername(req.Username);
+				var errors = new List<string>();
+
+				// Add errors to list
+				if (existingUser != null)
+				{
+					errors.Add("err_username");
+				}
+				if (!req.Password.Equals(req.PasswordVerify))
+				{
+					errors.Add("err_password");
+				}
+
+				// If no errors create new user
+				if (errors.Count() == 0)
+				{
+					var role = await _Context.Roles.SingleOrDefaultAsync(rle => rle.Name == "user");
+					var lang = await _Context.Language.SingleOrDefaultAsync(lng => lng.Code == "en-EN");
+					var now = DateTime.UtcNow;
+
+					// Create new user
+					var user = await _Context.Users.AddAsync(new Entities.User
+					{
+						Activated = false,
+						Username = req.Username,
+						Password = req.Password,
+						Role = role,
+						Language = lang,
+						CreatedAt = now,
+					});
+
+					// Save user
+					await _Context.SaveChangesAsync();
+				}
+
+				return new Views.Users.CreateResponse
+				{
+					Username = req.Username,
+					Errors = errors,
+				};
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+			
+		}
+
+		private async Task<Entities.User> GetByUsername(string username)
+		{
+			try
+			{
+				var user = await _Context.Users.SingleOrDefaultAsync(usr => usr.Username.Equals(username));
+				return user;
 			}
 			catch (Exception e)
 			{

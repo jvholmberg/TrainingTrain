@@ -1,6 +1,6 @@
 ﻿namespace Application.Views.Auth
 {
-	public class AuthenticateRequests
+	public class AuthenticateRequest
 	{
 		public string Username { get; set; }
 		public string Password { get; set; }

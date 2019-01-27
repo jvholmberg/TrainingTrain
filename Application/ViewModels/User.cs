@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Application.Views.Users
+namespace Application.ViewModels
 {
 	public class User
 	{
