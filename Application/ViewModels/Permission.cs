@@ -1,6 +1,6 @@
 ﻿namespace Application.ViewModels
 {
-	public class Role
+	public class Permission
 	{
 		public bool Create { get; set; }
 		public bool Read { get; set; }
@@ -8,7 +8,7 @@
 		public bool Delete { get; set; }
 		public bool Special { get; set; }
 
-		public Role(Entities.Role role)
+		public Permission(Entities.Role role)
 		{
 			Create = role.Create;
 			Read = role.Read;

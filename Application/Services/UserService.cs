@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -32,32 +33,28 @@ namespace Application.Services
 		{
 			try
 			{
-				if (_AuthHelper.TryParse(authorization, out IDictionary<string, string> dict))
-				{
-
-					if (dict.TryGetValue(ClaimTypes.Name, out string userId)
+				if (_AuthHelper.TryParse(authorization, out IDictionary<string, string> dict)
+					&& dict.TryGetValue(ClaimTypes.Name, out string userId)
 					&& dict.TryGetValue(ClaimTypes.Role, out string userRole))
+				{
+					if (!userRole.Equals("admin") && !userId.Equals(id))
 					{
-						if (!userRole.Equals("admin") && !userId.Equals(id))
-						{
-							throw new Exception();
-						}
-
-						var requestedUser = await _Context.Users
-							.Include(usr => usr.Role)
-							.Include(usr => usr.Language)
-							.SingleOrDefaultAsync(x => x.Id.Equals(id));
-
-						return new ViewModels.User(requestedUser);
+						throw new NotAllowedException($"userId: {userId} with role {userRole} is not allowed");
 					}
-					else
-					{
-						throw new Exception();
-					}
+
+					// Get requested user
+					var requestedUser = await _Context.Users
+						.Include(usr => usr.Role)
+						.Include(usr => usr.Language)
+						.SingleOrDefaultAsync(usr =>
+							usr.Id.Equals(id)
+							&& usr.Role.Name.Equals(userRole));
+
+					return new ViewModels.User(requestedUser);
 				}
 				else
 				{
-					throw new Exception();
+					throw new JwtTokenException($"Could not parse jwt-token");
 				}
 			}
 			catch (Exception e)
@@ -70,33 +67,27 @@ namespace Application.Services
 		{
 			try
 			{
-				if (_AuthHelper.TryParse(authorization, out IDictionary<string, string> dict))
-				{
-					if (dict.TryGetValue(ClaimTypes.Name, out string userId)
+				if (_AuthHelper.TryParse(authorization, out IDictionary<string, string> dict)
+					&& dict.TryGetValue(ClaimTypes.Name, out string userId)
 					&& dict.TryGetValue(ClaimTypes.Role, out string userRole))
+				{
+					var user = await _Context.Users.FindAsync(userId);
+
+					if (!user.Role.Name.Equals("admin") || !user.Id.Equals(userId))
 					{
-						var user = await _Context.Users.FindAsync(userId);
-
-						if (!user.Role.Name.Equals("admin"))
-						{
-							throw new Exception();
-						}
-
-						var requestedUsers = await _Context.Users
-							.Include(usr => usr.Role)
-							.Include(usr => usr.Language)
-							.ToListAsync();
-
-						return requestedUsers.Select(usr => new ViewModels.User(usr));
+						throw new NotAllowedException($"userId: {userId} with role {userRole} is not allowed");
 					}
-					else
-					{
-						throw new Exception();
-					}
+
+					var requestedUsers = await _Context.Users
+						.Include(usr => usr.Role)
+						.Include(usr => usr.Language)
+						.ToListAsync();
+
+					return requestedUsers.Select(usr => new ViewModels.User(usr));
 				}
 				else
 				{
-					throw new Exception();
+					throw new JwtTokenException($"Could not parse jwt-token");
 				}
 			}
 			catch (Exception e)

@@ -87,6 +87,7 @@ namespace Application.Helpers
 			
 		public string CreateToken(int id, string role, DateTime expiry)
 		{
+			// TODO: Should expiry be in Epoch?
 			try
 			{
 				// Get secret from config

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Application.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,9 +31,13 @@ namespace Application.Controllers
 				var res = await _UserService.GetById(authorization, id);
 				return Ok(res);
 			}
-			catch
+			catch (NotAllowedException e)
 			{
-				return BadRequest();
+				return Unauthorized();
+			}
+			catch (JwtTokenException e)
+			{
+				return BadRequest(e);
 			}
 		}
 		
@@ -45,9 +50,13 @@ namespace Application.Controllers
 				var res = await _UserService.GetAll(authorization);
 				return Ok(res);
 			}
-			catch
+			catch (NotAllowedException e)
 			{
-				return BadRequest();
+				return Unauthorized();
+			}
+			catch (JwtTokenException e)
+			{
+				return BadRequest(e);
 			}
 		}
 
