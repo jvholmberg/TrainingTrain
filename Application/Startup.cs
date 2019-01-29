@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Threading.Tasks;
+using MsvcAuth;
 
 namespace Application
 {
@@ -40,27 +41,7 @@ namespace Application
 			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
 
 			// Configure JWT authentication
-			var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-			services.AddAuthentication(options =>
-			{
-				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-			})
-			.AddJwtBearer(options =>
-			{
-				options.RequireHttpsMetadata = appSettings.RequireHttpsMetadata;
-				options.SaveToken = appSettings.SaveToken;
-				options.TokenValidationParameters = new TokenValidationParameters
-				{
-					ValidateIssuerSigningKey = appSettings.ValidateIssuerSigningKey,
-					IssuerSigningKey = new SymmetricSecurityKey(key),
-					ValidateIssuer = appSettings.ValidateIssuer,
-					ValidateAudience = appSettings.ValidateAudience,
-					ValidateLifetime = appSettings.ValidateLifeTime,
-					ValidIssuer = appSettings.Issuer,
-					ValidAudience = appSettings.Issuer,
-				};
-			});
+			services.SetupMsvcAuth(appSettings.Secret);
 
 			// Add services
 			services.AddScoped<IAuthService, AuthService>();
