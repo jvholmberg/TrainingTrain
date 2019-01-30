@@ -10,9 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Context\" />
-    <Folder Include="Helpers\" />
+    <Folder Include="Controllers\" />
     <Folder Include="Workers\" />
   </ItemGroup>
 

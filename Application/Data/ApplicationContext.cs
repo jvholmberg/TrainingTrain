@@ -10,8 +10,6 @@ namespace Application.Data
         }
 
 		public DbSet<Entities.User> Users { get; set; }
-		public DbSet<Entities.Role> Roles { get; set; }
-		public DbSet<Entities.Language> Language { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -31,6 +29,5 @@ namespace Application.Data
 			modelBuilder.Entity<Entities.Language>()
 				.ToTable("Language");
 		}
-	
 	}
 }

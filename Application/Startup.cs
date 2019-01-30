@@ -41,7 +41,8 @@ namespace Application
 			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
 
 			// Configure JWT authentication
-			services.SetupMsvcAuth(appSettings.Secret);
+			var msvcAuthConnectionString = connectionString;
+			services.SetupMsvcAuth(msvcAuthConnectionString, appSettings.Secret);
 
 			// Add services
 			services.AddScoped<IAuthService, AuthService>();
@@ -70,7 +71,8 @@ namespace Application
 				.AllowAnyMethod()
 				.AllowAnyHeader()
 			);
-			app.UseAuthentication();
+
+			app.SetupMsvcAuth();
 
 			app.UseMvc();
 		}

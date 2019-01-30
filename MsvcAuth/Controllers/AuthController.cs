@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Application.Controllers
+namespace MsvcAuth.Controllers
 {
 	[Authorize]
 	[ApiController]
@@ -11,16 +11,13 @@ namespace Application.Controllers
     public class AuthController : ControllerBase
     {
 
-        private readonly Services.IAuthService _AuthService;
-
-        public AuthController(Services.IAuthService authorizationService)
+        public AuthController()
         {
-			_AuthService = authorizationService;
         }
 
 		[AllowAnonymous]
 		[HttpPost]
-		public async Task<IActionResult> Authenticate([FromBody]Views.Auth.AuthenticateRequest req)
+		public async Task<IActionResult> Authenticate([FromBody]Views.MsvcAuthLoginRequestBody req)
 		{
 			try
 			{
@@ -34,7 +31,7 @@ namespace Application.Controllers
 		}
 		
 		[HttpGet]
-		public IActionResult Authenticate([FromHeader]string authorization)
+		public IActionResult Authenticate([FromHeader]string msvcAuthUserId, [FromHeader]string msvcAuthUserRole)
 		{
 			return Ok();
 		}
