@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using MsvcAuth.Context;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,10 +12,18 @@ namespace MsvcAuth
 	public static class Setup
 	{
 
-		public static void SetupMsvcAuth(this IServiceCollection services, string connectionString, string secret)
+		public static void SetupMsvcAuth(this IServiceCollection services)
 		{
+
+			var appSettingsSection = Configuration.GetSection("AppSettings");
+			services.Configure<AppSettings>(appSettingsSection);
+			var appSettings = appSettingsSection.Get<AppSettings>();
+
 			// Establish database connection
-			services.AddEntityFrameworkNpgsql().AddDbContext<AuthContext>(options => options.UseNpgsql(connectionString));
+			services.AddEntityFrameworkNpgsql().AddDbContext<Context.AuthContext>(options => options.UseNpgsql(connectionString));
+
+			// Add service
+			services.AddScoped<Services.IAuthService, Services.AuthService>();
 
 			// Config authentication 
 			var key = Encoding.ASCII.GetBytes(secret);

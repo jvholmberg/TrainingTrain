@@ -41,11 +41,10 @@ namespace Application
 			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
 
 			// Configure JWT authentication
-			var msvcAuthConnectionString = connectionString;
+			var msvcAuthConnectionString = Configuration.GetConnectionString("MsvcAuthConnectionString");
 			services.SetupMsvcAuth(msvcAuthConnectionString, appSettings.Secret);
 
 			// Add services
-			services.AddScoped<IAuthService, AuthService>();
 			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IRoleService, RoleService>();
 			services.AddScoped<ILanguageService, LanguageService>();

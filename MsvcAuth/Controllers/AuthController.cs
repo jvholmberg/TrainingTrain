@@ -10,9 +10,11 @@ namespace MsvcAuth.Controllers
 	[Produces("application/json")]
     public class AuthController : ControllerBase
     {
+		private readonly Services.IAuthService _AuthService;
 
-        public AuthController()
+        public AuthController(Services.IAuthService authService)
         {
+			_AuthService = authService;
         }
 
 		[AllowAnonymous]
@@ -31,18 +33,19 @@ namespace MsvcAuth.Controllers
 		}
 		
 		[HttpGet]
-		public IActionResult Authenticate([FromHeader]string msvcAuthUserId, [FromHeader]string msvcAuthUserRole)
+		public IActionResult Authenticate()
 		{
 			return Ok();
 		}
 
 		[AllowAnonymous]
 		[HttpPut("{refreshToken}")]
-		public async Task<IActionResult> Refresh([FromRoute] string refreshToken)
+		public async Task<IActionResult> Refresh([FromHeader]Views.MsvcAuthRequestHeaders headers, [FromRoute] string refreshToken)
 		{
 			try
 			{
-				var res = await _AuthService.Authenticate(refreshToken);
+				int.TryParse(headers.MsvcAuthUserId, out int msvcAuthUserId);
+				var res = await _AuthService.Authenticate(msvcAuthUserId, headers.MsvcAuthUserRole, refreshToken);
 				return Ok(res);
 			}
 			catch
@@ -52,11 +55,11 @@ namespace MsvcAuth.Controllers
 		}
 		
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Destroy([FromHeader]string authorization, [FromRoute] int id)
+		public async Task<IActionResult> Destroy([FromHeader]Views.MsvcAuthRequestHeaders headers, string id)
 		{
 			try
 			{
-				var destroyed = await _AuthService.Destroy(authorization, id);
+				var destroyed = await _AuthService.Destroy(headers.MsvcAuthUserId, id);
 				if (destroyed)
 				{
 					return Ok();
