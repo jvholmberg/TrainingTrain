@@ -16,10 +16,11 @@ namespace MsvcAuth.Services
 		private readonly Helpers.AuthHelper _AuthHelper;
 		private readonly string _Secret;
 
-		public AuthService(Context.AuthContext context)
+		public AuthService(Context.AuthContext context, string secret)
 		{
 			_Context = context;
 			_AuthHelper = new Helpers.AuthHelper();
+			_Secret = secret;
 		}
 
 		public async Task<Views.MsvcAuthResponseBody> Authenticate(string username, string password)
@@ -33,28 +34,28 @@ namespace MsvcAuth.Services
 				}
 
 				// Get entity from db
-				var entity = _Context.Auth.SingleOrDefault(e => e.Username.Equals(username));
+				var user = _Context.Auth.SingleOrDefault(e => e.Username.Equals(username));
 
 				// Check if any entity was found
-				if (entity == null)
+				if (user == null)
 				{
 					return new Views.MsvcAuthResponseBody { Message = "no_entity_found" };
 				}
 
 				// Check if passwords match
-				if (!entity.Password.Equals(password))
+				if (!user.Password.Equals(password))
 				{
 					return new Views.MsvcAuthResponseBody { Message = "incorrect_password" };
 				}
 
 				// Create access token
-				var accessToken = _AuthHelper.CreateAccessToken(user.Id, user.Role, secret, out DateTime expiry);
+				var accessToken = _AuthHelper.CreateAccessToken(user.Id, user.Role, _Secret, out DateTime expiry);
 
 				// Create refresh token
 				var refreshToken = _AuthHelper.CreateRefreshToken();
 
 				// Update entity with new refresh token
-				entity.RefreshToken = refreshToken;
+				user.RefreshToken = refreshToken;
 
 				// Save updated entity
 				await _Context.SaveChangesAsync();
@@ -94,7 +95,7 @@ namespace MsvcAuth.Services
 				}
 
 				// Create access token
-				var accessToken = _AuthHelper.CreateAccessToken(msvcAuthUserId, msvcAuthUserRole, secret, out DateTime expiry);
+				var accessToken = _AuthHelper.CreateAccessToken(msvcAuthUserId, msvcAuthUserRole, _Secret, out DateTime expiry);
 
 				// Create refresh token
 				var newRefreshToken = _AuthHelper.CreateRefreshToken();

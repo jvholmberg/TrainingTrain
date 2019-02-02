@@ -1,14 +1,15 @@
 ﻿using Application.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.Controllers
+namespace MsvcUser.Controllers
 {
 	[Authorize]
 	[ApiController]
-	[Route("[controller]")]
+	[Route("user")]
 	[Produces("application/json")]
     public class UsersController : ControllerBase
     {
@@ -29,11 +30,7 @@ namespace Application.Controllers
 				var res = await _UserService.GetById(authorization, id);
 				return Ok(res);
 			}
-			catch (NotAllowedException e)
-			{
-				return Unauthorized();
-			}
-			catch (JwtTokenException e)
+			catch (Exception e)
 			{
 				return BadRequest(e);
 			}
@@ -48,11 +45,7 @@ namespace Application.Controllers
 				var res = await _UserService.GetAll(authorization);
 				return Ok(res);
 			}
-			catch (NotAllowedException e)
-			{
-				return Unauthorized();
-			}
-			catch (JwtTokenException e)
+			catch (Exception e)
 			{
 				return BadRequest(e);
 			}

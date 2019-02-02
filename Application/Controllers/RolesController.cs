@@ -14,7 +14,7 @@ namespace Application.Controllers
 	{
 		private readonly Services.IRoleService _RoleService;
 
-		public RolesController(Services.IAuthService authService, Services.IRoleService roleService)
+		public RolesController(Services.IRoleService roleService)
 		{
 			_RoleService = roleService;
 		}

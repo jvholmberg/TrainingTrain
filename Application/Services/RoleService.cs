@@ -18,13 +18,11 @@ namespace Application.Services
 	{
 		private readonly Helpers.AppSettings _AppSettings;
 		private readonly Data.ApplicationContext _Context;
-		private readonly Helpers.AuthHelper _AuthHelper;
 
 		public RoleService(IOptions<Helpers.AppSettings> appSettings, Data.ApplicationContext context)
 		{
 			_AppSettings = appSettings.Value;
 			_Context = context;
-			_AuthHelper = new Helpers.AuthHelper(appSettings.Value);
 		}
 
 		public async Task<IEnumerable<ViewModels.Role>> GetAll(string authorization)

@@ -9,10 +9,13 @@ namespace MsvcAuth.Context
         {
         }
 
-		public DbSet<Entities.Auth> Auth { get; set; }
+		public DbSet<Entities.User> Auth { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			modelBuilder
+				.Entity<Entities.User>()
+				.ToTable("user");
 		}
 	}
 }
