@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Application.Data
+namespace MsvcUser.Context
 {
     public class ApplicationContext : DbContext
     {

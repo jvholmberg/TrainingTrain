@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MsvcAuth\MsvcAuth.csproj" />
+    <ProjectReference Include="..\MsvcUser\MsvcUser.csproj" />
   </ItemGroup>
 
 </Project>

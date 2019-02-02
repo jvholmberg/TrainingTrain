@@ -1,23 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MsvcUser
 {
-	public static class Setup
+    public static class Setup
 	{
 
-		public static void SetupMsvcUser(this IServiceCollection services)
+		public static void SetupMsvcUser(this IServiceCollection services, string connectionString)
 		{
 			
 			// Establish database connection
-			services.AddEntityFrameworkNpgsql().AddDbContext<Context.AuthContext>(options => options.UseNpgsql(connectionString));
+			services.AddEntityFrameworkNpgsql().AddDbContext<Context.UserContext>(options => options.UseNpgsql(connectionString));
 
 			// Add service
 			services.AddScoped<Services.IUserService, Services.UserService>();
