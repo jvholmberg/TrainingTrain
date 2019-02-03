@@ -2,9 +2,9 @@
 
 namespace MsvcUser.Context
 {
-    public class ApplicationContext : DbContext
+    public class UserContext : DbContext
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
         }
@@ -16,8 +16,6 @@ namespace MsvcUser.Context
 			// User
 			modelBuilder.Entity<Entities.User>()
 				.ToTable("User");
-			modelBuilder.Entity<Entities.User>()
-				.HasOne(usr => usr.Role);
 			modelBuilder.Entity<Entities.User>()
 				.HasOne(usr => usr.Language);
 

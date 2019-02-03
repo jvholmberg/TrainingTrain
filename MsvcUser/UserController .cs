@@ -19,23 +19,23 @@ namespace MsvcUser.Controllers
         {
 			_UserService = userService;
         }
-		
-		[HttpGet("{id}")]
-		public async Task<IActionResult> GetById([FromHeader]string authorization, [FromRoute]int id)
-		{
-			try
-			{
-				// Return requested user
-				var res = await _UserService.GetById(authorization, id);
-				return Ok(res);
-			}
-			catch (Exception e)
-			{
-				return BadRequest(e);
-			}
-		}
-		
-		[HttpGet]
+
+        [HttpGet]
+        public async Task<IActionResult> GetByHeader([FromHeader]Views.Headers headers)
+        {
+            try
+            {
+                // Return requested user
+                var res = await _UserService.GetById(authorization, id);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
 		public async Task<IActionResult> GetAll([FromHeader]string authorization)
 		{
 			try

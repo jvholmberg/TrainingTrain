@@ -16,6 +16,13 @@ namespace MsvcAuth.Context
 			modelBuilder
 				.Entity<Entities.User>()
 				.ToTable("user");
-		}
+            modelBuilder
+                .Entity<Entities.User>()
+                .HasOne(usr => usr.Role);
+
+            modelBuilder
+                .Entity<Entities.User>()
+                .ToTable("role");
+        }
 	}
 }

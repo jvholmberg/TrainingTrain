@@ -11,5 +11,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Views\User %28copy%29.cs" />
   </ItemGroup>
 </Project>

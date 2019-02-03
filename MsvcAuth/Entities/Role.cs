@@ -1,4 +1,4 @@
-﻿namespace MsvcUser.Entities
+﻿namespace MsvcAuth.Entities
 {
 	public class Role
 	{
