@@ -1,13 +1,11 @@
-﻿using Application.Data;
-using Application.Helpers;
-using Application.Services;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MsvcAuth;
+using MsvcUser;
 
 namespace Application
 {
@@ -23,27 +21,17 @@ namespace Application
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			var appSettingsSection = _Configuration.GetSection("AppSettings");
-			services.Configure<AppSettings>(appSettingsSection);
-			var appSettings = appSettingsSection.Get<AppSettings>();
-			
-			// Basic configuration
-
 			services.AddCors();
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-			// Load settings
 
-			var connectionString = _Configuration.GetConnectionString("DatabaseConnection");
-			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
 
-			// Configure JWT authentication
-			var msvcAuthConnectionString = _Configuration.GetConnectionString("MsvcAuthDatabaseConnection");
-			services.SetupMsvcAuth(msvcAuthConnectionString, appSettings.Secret);
+            // Configure Auth
+            var msvcAuthConnectionString = _Configuration.GetConnectionString("MsvcAuthDatabaseConnection");
+            services.SetupMsvcAuth(msvcAuthConnectionString);
 
-			// Add services
-			services.AddScoped<IUserService, UserService>();
-			services.AddScoped<IRoleService, RoleService>();
-			services.AddScoped<ILanguageService, LanguageService>();
+            // Configure User
+            var msvcUserConnectionString = _Configuration.GetConnectionString("MsvcUserDatabaseConnection");
+            services.SetupMsvcUser(msvcUserConnectionString);
 
 		}
 

@@ -11,6 +11,12 @@
     <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="wwwroot\**" />
+    <Compile Remove="Controllers\LanguagesController.cs" />
+    <Compile Remove="Controllers\RolesController.cs" />
+    <Compile Remove="Controllers\UsersController .cs" />
+    <Compile Remove="Entities\Language.cs" />
+    <Compile Remove="Exceptions\JwtTokenException.cs" />
+    <Compile Remove="Helpers\AppSettings.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,4 +33,7 @@
     <ProjectReference Include="..\MsvcUser\MsvcUser.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace MsvcUser.Views
+﻿namespace MsvcUser.Views.Response
 {
     public class Language
     {

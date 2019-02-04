@@ -1,5 +1,5 @@
 ﻿using System;
-namespace MsvcUser.Views
+namespace MsvcUser.Views.Response
 {
     public class User
     {

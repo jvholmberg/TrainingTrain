@@ -12,8 +12,13 @@
   <ItemGroup>
     <Folder Include="Entities\" />
     <Folder Include="Views\" />
+    <Folder Include="Views\Response\" />
+    <Folder Include="Views\Request\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\User %28copy%29.cs" />
+    <Compile Remove="Views\Response\Language.cs" />
+    <Compile Remove="Views\Response\Role.cs" />
+    <Compile Remove="Views\Response\User.cs" />
   </ItemGroup>
 </Project>

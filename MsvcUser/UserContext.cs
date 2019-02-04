@@ -15,17 +15,13 @@ namespace MsvcUser.Context
 		{
 			// User
 			modelBuilder.Entity<Entities.User>()
-				.ToTable("User");
+				.ToTable("user");
 			modelBuilder.Entity<Entities.User>()
 				.HasOne(usr => usr.Language);
-
-			// Role
-			modelBuilder.Entity<Entities.Role>()
-				.ToTable("Role");
 			
 			// Language
 			modelBuilder.Entity<Entities.Language>()
-				.ToTable("Language");
+				.ToTable("language");
 		}
 	}
 }

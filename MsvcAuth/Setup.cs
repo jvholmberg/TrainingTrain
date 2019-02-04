@@ -13,7 +13,7 @@ namespace MsvcAuth
 	public static class Setup
 	{
 
-		public static void SetupMsvcAuth(this IServiceCollection services, string connectionString, string secret)
+		public static void SetupMsvcAuth(this IServiceCollection services, string connectionString)
 		{
 			
 			// Establish database connection
@@ -22,7 +22,8 @@ namespace MsvcAuth
 			// Add service
 			services.AddScoped<Services.IAuthService, Services.AuthService>();
 
-			// Config authentication 
+            // Config authentication
+            var secret = "This is a very secret secret";
 			var key = Encoding.ASCII.GetBytes(secret);
 			services.AddAuthentication(options =>
 			{

@@ -6,7 +6,7 @@ namespace MsvcAuth.Controllers
 {
 	[Authorize]
 	[ApiController]
-	[Route("[controller]")]
+	[Route("auth")]
 	[Produces("application/json")]
     public class AuthController : ControllerBase
     {

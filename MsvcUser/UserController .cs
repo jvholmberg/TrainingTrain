@@ -8,7 +8,7 @@ namespace MsvcUser.Controllers
 {
 	[Authorize]
 	[ApiController]
-	[Route("user")]
+	[Route("users")]
 	[Produces("application/json")]
     public class UsersController : ControllerBase
     {
@@ -21,12 +21,12 @@ namespace MsvcUser.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByHeader([FromHeader]Views.Headers headers)
+        public async Task<IActionResult> GetByHeader([FromHeader]Views.Request.Headers headers)
         {
             try
             {
                 // Return requested user
-                var res = await _UserService.GetById(authorization, id);
+                var res = await _UserService.GetById(headers.UserId);
                 return Ok(res);
             }
             catch (Exception e)
@@ -36,12 +36,12 @@ namespace MsvcUser.Controllers
         }
 
         [HttpGet]
-		public async Task<IActionResult> GetAll([FromHeader]string authorization)
+		public async Task<IActionResult> GetAll([FromHeader]Views.Request.Headers headers)
 		{
 			try
 			{
 				// Return all users
-				var res = await _UserService.GetAll(authorization);
+				var res = await _UserService.GetAll(headers.UserId, headers.UserRole);
 				return Ok(res);
 			}
 			catch (Exception e)
@@ -50,20 +50,20 @@ namespace MsvcUser.Controllers
 			}
 		}
 
-		[AllowAnonymous]
-		[HttpPost]
-		public async Task<IActionResult> Create([FromBody]Views.Users.CreateRequest req)
-		{
-			try
-			{
-				var res = await _UserService.Create(req);
-				return Ok(res);
-			}
-			catch
-			{
-				return BadRequest();
-			}
-		}
+		//[AllowAnonymous]
+		//[HttpPost]
+		//public async Task<IActionResult> Create([FromBody]Views.Users.CreateRequest req)
+		//{
+		//	try
+		//	{
+		//		var res = await _UserService.Create(req);
+		//		return Ok(res);
+		//	}
+		//	catch
+		//	{
+		//		return BadRequest();
+		//	}
+		//}
 
 	}
 }

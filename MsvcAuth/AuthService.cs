@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MsvcAuth.Services
 {
@@ -33,9 +34,11 @@ namespace MsvcAuth.Services
 					return new Views.MsvcAuthResponseBody { Message = "empty_username_or_password" };
 				}
 
-				// Get entity from db
-				var user = _Context.Auth.SingleOrDefault(e => e.Username.Equals(username));
-
+                // Get entity from db
+                var user = await _Context.Auth
+                    .Include(usr => usr.Role)
+                    .SingleOrDefaultAsync(e => e.Username.Equals(username));
+                
 				// Check if any entity was found
 				if (user == null)
 				{
@@ -49,7 +52,7 @@ namespace MsvcAuth.Services
 				}
 
 				// Create access token
-				var accessToken = _AuthHelper.CreateAccessToken(user.Id, user.Role, _Secret, out DateTime expiry);
+				var accessToken = _AuthHelper.CreateAccessToken(user.Id, user.Role.Name, _Secret, out DateTime expiry);
 
 				// Create refresh token
 				var refreshToken = _AuthHelper.CreateRefreshToken();

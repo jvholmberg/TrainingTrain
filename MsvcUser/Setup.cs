@@ -16,10 +16,5 @@ namespace MsvcUser
 			// Add service
 			services.AddScoped<Services.IUserService, Services.UserService>();
 		}
-
-		public static void SetupMsvcAuth(this IApplicationBuilder app)
-		{
-			app.UseAuthentication();
-		}
 	}
 }

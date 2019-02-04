@@ -10,7 +10,8 @@ namespace MsvcUser.Services
 {
 	public interface IUserService
     {
-
+        Task<Entities.User> GetById(int id);
+        Task<IEnumerable<Entities.User>> GetAll(int id, string role);
     }
 
 	public class UserService : IUserService
@@ -21,10 +22,10 @@ namespace MsvcUser.Services
 		public UserService(Context.UserContext context)
 		{
 			_Context = context;
-			_UserHelper = new Helpers.UserHelper()
+            _UserHelper = new Helpers.UserHelper();
         }
 
-        public async Task<Views.User> GetById(int id)
+        public async Task<Entities.User> GetById(int id)
         {
             try
             {
@@ -39,13 +40,7 @@ namespace MsvcUser.Services
                     return null;
                 }
 
-                return new Views.User
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-
-                    
-                };
+                return user;
             }
             catch (Exception e)
             {
@@ -53,21 +48,17 @@ namespace MsvcUser.Services
             }
         }
 
-        public async Task<Views.User> GetAll(int id)
+        public async Task<IEnumerable<Entities.User>> GetAll(int id, string role)
         {
-
+            try
+            {
+                var users = await _Context.Users.ToListAsync();
+                return users;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
-
-        public async Task<Views.User> Create(int id)
-        {
-
-        }
-
-        public async Task<Views.User> Update(int id)
-        {
-
-        }
-
-
     }
 }
