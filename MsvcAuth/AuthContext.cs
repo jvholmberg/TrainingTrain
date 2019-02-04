@@ -10,7 +10,8 @@ namespace MsvcAuth.Context
         {
         }
 
-		public DbSet<Entities.User> Auth { get; set; }
+		public DbSet<Entities.User> User { get; set; }
+		public DbSet<Entities.Role> Role { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

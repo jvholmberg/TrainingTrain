@@ -6,6 +6,11 @@ using System.Text;
 
 namespace MsvcAuth.Helpers
 {
+	public static class AuthConstants
+	{
+		public static string Secret = "secret is a very secret secret that is secret";
+	}
+
 	public class AuthHelper
 	{
 		private readonly JwtSecurityTokenHandler _TokenHandler;
@@ -15,9 +20,9 @@ namespace MsvcAuth.Helpers
 			_TokenHandler = new JwtSecurityTokenHandler();
 		}
 
-		public string CreateAccessToken(int userId, string userRole, string secret, out DateTime expiry)
+		public string CreateAccessToken(int userId, string userRole, out DateTime expiry)
 		{
-			var securityKey = Encoding.ASCII.GetBytes(secret);
+			var securityKey = Encoding.ASCII.GetBytes(AuthConstants.Secret);
 			var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256Signature);
 			expiry = DateTime.UtcNow.AddHours(1);
 			var tokenDescriptor = new SecurityTokenDescriptor

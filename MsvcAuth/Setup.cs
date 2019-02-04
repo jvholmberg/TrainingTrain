@@ -23,8 +23,7 @@ namespace MsvcAuth
 			services.AddScoped<Services.IAuthService, Services.AuthService>();
 
             // Config authentication
-            var secret = "This is a very secret secret";
-			var key = Encoding.ASCII.GetBytes(secret);
+			var key = Encoding.ASCII.GetBytes(Helpers.AuthConstants.Secret);
 			services.AddAuthentication(options =>
 			{
 				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
