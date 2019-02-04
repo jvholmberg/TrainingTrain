@@ -35,20 +35,20 @@ namespace MsvcUser.Controllers
             }
         }
 
-        [HttpGet]
-		public async Task<IActionResult> GetAll([FromHeader]Views.Request.Headers headers)
-		{
-			try
-			{
-				// Return all users
-				var res = await _UserService.GetAll(headers.UserId, headers.UserRole);
-				return Ok(res);
-			}
-			catch (Exception e)
-			{
-				return BadRequest(e);
-			}
-		}
+  //      [HttpGet]
+		//public async Task<IActionResult> GetAll([FromHeader]Views.Request.Headers headers)
+		//{
+		//	try
+		//	{
+		//		// Return all users
+		//		var res = await _UserService.GetAll(headers.UserId, headers.UserRole);
+		//		return Ok(res);
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		return BadRequest(e);
+		//	}
+		//}
 
 		//[AllowAnonymous]
 		//[HttpPost]

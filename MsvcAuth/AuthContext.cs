@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace MsvcAuth.Context
 {
@@ -21,8 +22,18 @@ namespace MsvcAuth.Context
                 .HasOne(usr => usr.Role);
 
             modelBuilder
-                .Entity<Entities.User>()
+                .Entity<Entities.Role>()
                 .ToTable("role");
         }
+	}
+
+	public class AuthContextFactory : IDesignTimeDbContextFactory<AuthContext>
+	{
+		public AuthContext CreateDbContext(string[] args)
+		{
+			var optionsBuilder = new DbContextOptionsBuilder<AuthContext>();
+			optionsBuilder.UseNpgsql("User ID=postgres;Server=localhost;Database=msvc_auth");
+			return new AuthContext(optionsBuilder.Options);
+		}
 	}
 }

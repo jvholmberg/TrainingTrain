@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace MsvcUser.Context
 {
@@ -22,6 +23,16 @@ namespace MsvcUser.Context
 			// Language
 			modelBuilder.Entity<Entities.Language>()
 				.ToTable("language");
+		}
+	}
+
+	public class UserContextFactory : IDesignTimeDbContextFactory<UserContext>
+	{
+		public UserContext CreateDbContext(string[] args)
+		{
+			var optionsBuilder = new DbContextOptionsBuilder<UserContext>();
+			optionsBuilder.UseNpgsql("User ID=postgres;Server=localhost;Database=msvc_user");
+			return new UserContext(optionsBuilder.Options);
 		}
 	}
 }
