@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MsvcAuth;
-using MsvcUser;
+
+using Application.Auth;
+using Application.User;
+using Application.Promo;
 
 namespace Application
 {
@@ -25,12 +27,17 @@ namespace Application
 
 
             // Configure Auth
-            var msvcAuthConnectionString = _Configuration.GetConnectionString("MsvcAuthDatabaseConnection");
-            services.SetupMsvcAuth(msvcAuthConnectionString);
+            var authConnectionString = _Configuration.GetConnectionString("AuthDatabaseConnection");
+            services.SetupApplicationAuth(authConnectionString);
 
             // Configure User
-            var msvcUserConnectionString = _Configuration.GetConnectionString("MsvcUserDatabaseConnection");
-            services.SetupMsvcUser(msvcUserConnectionString);
+            var userConnectionString = _Configuration.GetConnectionString("UserDatabaseConnection");
+            services.SetupApplicationUser(userConnectionString);
+
+			// Configure Promo
+			var promoConnectionString = _Configuration.GetConnectionString("PromoDatabaseConnection");
+			services.SetupApplicationPromo(promoConnectionString);
+
 
 		}
 
@@ -54,7 +61,7 @@ namespace Application
 				.AllowAnyHeader()
 			);
 
-			app.SetupMsvcAuth();
+			app.SetupApplicationAuth();
 
 			app.UseMvc();
 		}

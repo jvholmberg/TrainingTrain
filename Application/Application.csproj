@@ -7,23 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\**" />
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="Migrations\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="Migrations\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="Migrations\**" />
-    <None Remove="wwwroot\**" />
-    <Compile Remove="Controllers\LanguagesController.cs" />
-    <Compile Remove="Controllers\RolesController.cs" />
-    <Compile Remove="Controllers\UsersController .cs" />
-    <Compile Remove="Entities\Language.cs" />
-    <Compile Remove="Exceptions\JwtTokenException.cs" />
-    <Compile Remove="Helpers\AppSettings.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
@@ -33,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MsvcAuth\MsvcAuth.csproj" />
-    <ProjectReference Include="..\MsvcUser\MsvcUser.csproj" />
+    <ProjectReference Include="..\Application.Auth\Application.Auth.csproj" />
+    <ProjectReference Include="..\Application.Promo\Application.Promo.csproj" />
+    <ProjectReference Include="..\Application.User\Application.User.csproj" />
   </ItemGroup>
 </Project>

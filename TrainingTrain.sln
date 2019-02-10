@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{02CFE5A3-DC59-4D08-A719-A1FF9A436F8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsvcAuth", "MsvcAuth\MsvcAuth.csproj", "{C71370C5-B8C1-4396-9FFD-54B64AFA20AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Auth", "Application.Auth\Application.Auth.csproj", "{C71370C5-B8C1-4396-9FFD-54B64AFA20AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsvcUser", "MsvcUser\MsvcUser.csproj", "{9DB0D3EF-78F4-4D7E-B2E9-158B178139EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.User", "Application.User\Application.User.csproj", "{9DB0D3EF-78F4-4D7E-B2E9-158B178139EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Promo", "Application.Promo\Application.Promo.csproj", "{D404C777-2F22-4BC9-9E94-160080773EE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9DB0D3EF-78F4-4D7E-B2E9-158B178139EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DB0D3EF-78F4-4D7E-B2E9-158B178139EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DB0D3EF-78F4-4D7E-B2E9-158B178139EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D404C777-2F22-4BC9-9E94-160080773EE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D404C777-2F22-4BC9-9E94-160080773EE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D404C777-2F22-4BC9-9E94-160080773EE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D404C777-2F22-4BC9-9E94-160080773EE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
